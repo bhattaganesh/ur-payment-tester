@@ -128,8 +128,8 @@ class URPT_Admin {
 	public function ajax_shift_dates() {
 		$this->verify_ajax();
 
-		$sub_id = absint( $_POST['subscription_id'] ?? 0 );
-		$days   = intval( $_POST['days'] ?? 30 );
+		$sub_id = isset( $_POST['subscription_id'] ) ? absint( wp_unslash( $_POST['subscription_id'] ) ) : 0;
+		$days   = isset( $_POST['days'] ) ? intval( wp_unslash( $_POST['days'] ) ) : 30;
 
 		try {
 			$res = $this->core->time_travel->shift_subscription_dates( $sub_id, $days );
@@ -245,8 +245,8 @@ class URPT_Admin {
 	public function ajax_save_settings() {
 		$this->verify_ajax();
 
-		$mode      = sanitize_text_field( $_POST['operating_mode'] ?? 'simulated' );
-		$mail_trap = sanitize_text_field( $_POST['mail_trap'] ?? 'yes' );
+		$mode      = isset( $_POST['operating_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['operating_mode'] ) ) : 'simulated';
+		$mail_trap = isset( $_POST['mail_trap'] ) ? sanitize_text_field( wp_unslash( $_POST['mail_trap'] ) ) : 'yes';
 
 		update_option( 'urpt_operating_mode', $mode );
 		update_option( 'urpt_mail_trap_enabled', $mail_trap );

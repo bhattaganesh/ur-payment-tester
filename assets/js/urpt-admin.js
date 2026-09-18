@@ -281,12 +281,22 @@
 		// 12. Settings Form Submit
 		$('#urpt-settings-form').on('submit', function(e) {
 			e.preventDefault();
-			var formData = $(this).serialize();
-
-			$.post(urpt_ajax.ajax_url + '?' + formData, {
+			var formData = $(this).serializeArray();
+			var postData = {
 				action: 'urpt_save_settings',
 				nonce: urpt_ajax.nonce
-			}).done(function(res) {
+			};
+
+			$.each(formData, function(i, field) {
+				postData[field.name] = field.value;
+			});
+
+			// Ensure unchecked mail_trap checkbox explicitly sends 'no'.
+			if (!postData.mail_trap) {
+				postData.mail_trap = 'no';
+			}
+
+			$.post(urpt_ajax.ajax_url, postData).done(function(res) {
 				if (res.success) {
 					logToConsole('Settings saved successfully.', true, res.data);
 					$('#urpt-active-mode-pill').html('Mode: <strong>' + res.data.mode.toUpperCase() + '</strong>');

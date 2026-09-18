@@ -18,7 +18,7 @@ class URPT_CLI {
 	 * ## OPTIONS
 	 *
 	 * <id>
-	 * : Scenario ID (1 through 6).
+	 * : Scenario ID (1 through 7).
 	 *
 	 * ## EXAMPLES
 	 *

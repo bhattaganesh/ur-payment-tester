@@ -146,11 +146,12 @@ class URPT_Webhook_Dispatcher {
 	 * @return array
 	 */
 	protected function build_stripe_payload( $event, array $ctx ) {
-		$event_id = 'evt_urpt_' . time();
-		$sub_id   = $ctx['subscription_id'] ?? 'sub_urpt_' . time();
-		$cus_id   = $ctx['customer_id'] ?? 'cus_urpt_' . time();
-		$pi_id    = $ctx['payment_intent'] ?? 'pi_urpt_' . time();
-		$inv_id   = $ctx['invoice_id'] ?? 'in_urpt_' . time();
+		$rand     = wp_generate_password( 8, false, false );
+		$event_id = 'evt_urpt_' . time() . '_' . $rand;
+		$sub_id   = $ctx['subscription_id'] ?? ( 'sub_urpt_' . time() );
+		$cus_id   = $ctx['customer_id'] ?? ( 'cus_urpt_' . time() );
+		$pi_id    = $ctx['payment_intent'] ?? ( 'pi_urpt_' . time() . '_' . $rand );
+		$inv_id   = $ctx['invoice_id'] ?? ( 'in_urpt_' . time() . '_' . $rand );
 		$amount   = (int) ( ( $ctx['amount'] ?? 10.00 ) * 100 );
 
 		$object_data = array();
@@ -272,7 +273,7 @@ class URPT_Webhook_Dispatcher {
 		switch ( $event ) {
 			case 'PAYMENT.CAPTURE.COMPLETED':
 				$resource = array(
-					'id'     => 'CAP-URPT-' . time(),
+					'id'     => $ctx['capture_id'] ?? ( 'CAP-URPT-' . time() ),
 					'status' => 'COMPLETED',
 					'amount' => array(
 						'currency_code' => $ctx['currency'] ?? 'USD',

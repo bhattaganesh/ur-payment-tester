@@ -41,11 +41,29 @@ function urpt_user_can_access() {
 }
 
 /**
+ * Displays an admin notice if User Registration is not active.
+ *
+ * @return void
+ */
+function urpt_missing_dependency_notice() {
+	?>
+	<div class="notice notice-error">
+		<p><?php esc_html_e( 'UR Payment Testing & Simulation Suite requires User Registration Pro and its Membership module to be installed and active.', 'ur-payment-tester' ); ?></p>
+	</div>
+	<?php
+}
+
+/**
  * Initializes the plugin once all plugins have loaded.
  *
  * @return void
  */
 function urpt_init() {
+	if ( ! class_exists( 'UserRegistration' ) ) {
+		add_action( 'admin_notices', 'urpt_missing_dependency_notice' );
+		return;
+	}
+
 	require_once URPT_PLUGIN_DIR . 'includes/class-urpt-core.php';
 	URPT_Core::instance();
 }

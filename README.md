@@ -12,10 +12,9 @@ Deployable on **TasteWP**, staging, LocalWP, and live testing environments with 
 | :--- | :--- | :---: | :---: | :--- |
 | **Stripe** | In-memory `URPT_Stripe_Mock_Client` & Elements mock | **None (0ms)** | Yes (Sub Schedules) | `Stripe-Signature` HMAC-SHA256 REST |
 | **PayPal REST** | Outgoing HTTP interceptor (`api.sandbox.paypal.com`) | **None (0ms)** | Yes (v1 Subscriptions) | REST Transmission Signature & Cert mock |
-| **Direct Bank Transfer** | Offline wire quarantine & 1-click admin approval | **None** | No | Manual verification & approval |
+| **Direct Bank Transfer** | Offline wire quarantine & 1-click admin approval | **None** | No | Manual verification & approval gate release |
 | **Authorize.Net** | API interceptor (`api.authorize.net`) AIM & ARB | **None (0ms)** | Yes (ARB Subscriptions) | Webhook simulation & silent post dispatch |
 | **Mollie** | API interceptor (`api.mollie.com`) Payments & Mandates | **None (0ms)** | Yes (SEPA / Recurring) | Webhook callback & paid state retrieval |
-| **Direct Bank Transfer** | Offline wire quarantine & 1-click admin approval | **None** | No | Manual verification & approval gate release |
 | **Coupons & UR-4386** | 100% discount delayed schedule validation | **None** | Yes | Prevents 0-amount gateway errors |
 | **Multi-Currency** | Real-time FX conversion engine | **None** | Yes | USD, EUR, GBP, CAD, AUD, JPY, INR |
 | **Inclusive/Exclusive Tax** | Dynamic tax calculation & breakdown | **None** | Yes | Region-based tax rate assertion |

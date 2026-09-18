@@ -50,6 +50,13 @@ $scenarios = array(
 		'description' => __( 'Simulates a Direct Bank Transfer signup. Confirms the order remains pending and user login is quarantined (ur_user_status = 0). Executes administrator manual approval and asserts login gate unlock.', 'ur-payment-tester' ),
 		'flow'        => 'Bank Signup -> Order Pending -> User Login Locked -> Admin Clicks Approve -> Order Completed -> User Unlocked (Status: 1)',
 	),
+	array(
+		'id'          => 7,
+		'title'       => __( 'Scenario 7: Asynchronous Gateway Settlement', 'ur-payment-tester' ),
+		'badge'       => 'Async Webhook',
+		'description' => __( 'Simulates asynchronous checkout (PayPal/Stripe/Mollie). Order begins in pending state with locked login. Webhook arrives asynchronously, UR Pro marks order completed, activates subscription, and releases user access.', 'ur-payment-tester' ),
+		'flow'        => 'Async Checkout -> Order Pending -> Webhook Confirmation Dispatched -> UR Pro Processes Webhook -> Order Completed -> Access Released',
+	),
 );
 ?>
 
