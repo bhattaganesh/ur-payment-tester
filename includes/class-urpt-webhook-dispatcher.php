@@ -21,6 +21,60 @@ class URPT_Webhook_Dispatcher {
 	 * @return array Dispatch result containing HTTP code, response body, and duration.
 	 */
 	public function dispatch( $gateway, $event_name, array $context = array() ) {
+		if ( 'authorize' === $gateway ) {
+			$start_time = microtime( true );
+			$core       = URPT_Core::instance();
+			$sub_id     = absint( $context['subscription_id'] ?? 1 );
+			$order_id   = absint( $context['order_id'] ?? 1 );
+
+			if ( false !== strpos( $event_name, 'failed' ) ) {
+				$res = $core->driver_authorize->dispatch_failed_payment_webhook( $sub_id );
+			} elseif ( false !== strpos( $event_name, 'cancel' ) ) {
+				$res = $core->driver_authorize->dispatch_cancellation_webhook( $sub_id );
+			} elseif ( false !== strpos( $event_name, 'refund' ) ) {
+				$res = $core->driver_authorize->dispatch_refund_webhook( $order_id );
+			} else {
+				$res = $core->driver_authorize->dispatch_renewal_webhook( $sub_id );
+			}
+
+			$duration = round( ( microtime( true ) - $start_time ) * 1000, 2 );
+			return array(
+				'gateway'     => 'authorize',
+				'event'       => $event_name,
+				'status_code' => $res['status_code'] ?? 200,
+				'response'    => $res,
+				'duration_ms' => $duration,
+				'payload'     => $res,
+			);
+		}
+
+		if ( 'mollie' === $gateway ) {
+			$start_time = microtime( true );
+			$core       = URPT_Core::instance();
+			$sub_id     = absint( $context['subscription_id'] ?? 1 );
+			$order_id   = absint( $context['order_id'] ?? 1 );
+
+			if ( false !== strpos( $event_name, 'failed' ) ) {
+				$res = $core->driver_mollie->dispatch_failed_payment_webhook( $sub_id );
+			} elseif ( false !== strpos( $event_name, 'cancel' ) ) {
+				$res = $core->driver_mollie->dispatch_cancellation_webhook( $sub_id );
+			} elseif ( false !== strpos( $event_name, 'refund' ) ) {
+				$res = $core->driver_mollie->dispatch_refund_webhook( $order_id );
+			} else {
+				$res = $core->driver_mollie->dispatch_renewal_webhook( $sub_id );
+			}
+
+			$duration = round( ( microtime( true ) - $start_time ) * 1000, 2 );
+			return array(
+				'gateway'     => 'mollie',
+				'event'       => $event_name,
+				'status_code' => $res['status_code'] ?? 200,
+				'response'    => $res,
+				'duration_ms' => $duration,
+				'payload'     => $res,
+			);
+		}
+
 		$payload = $this->build_payload( $gateway, $event_name, $context );
 		$body    = wp_json_encode( $payload );
 
@@ -38,6 +92,9 @@ class URPT_Webhook_Dispatcher {
 				URPT_Stripe_Mock_Client::$events[ $payload['id'] ] = $payload;
 				if ( class_exists( 'Stripe\ApiRequestor' ) ) {
 					\Stripe\ApiRequestor::setHttpClient( new URPT_Stripe_Mock_Client() );
+				}
+				if ( class_exists( 'Stripe\Stripe' ) ) {
+					\Stripe\Stripe::setApiKey( 'sk_test_urpt_simulated_secret_key' );
 				}
 			}
 			$timestamp = time();

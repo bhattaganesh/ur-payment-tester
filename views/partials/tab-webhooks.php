@@ -20,6 +20,8 @@ defined( 'ABSPATH' ) || exit;
 					<select id="urpt-wh-gateway" class="widefat">
 						<option value="stripe">Stripe (REST /wp-json/user-registration/stripe-webhook)</option>
 						<option value="paypal">PayPal REST (POST /wp-json/user-registration/paypal-webhook)</option>
+						<option value="authorize">Authorize.Net (Webhook Simulation & Driver)</option>
+						<option value="mollie">Mollie (Webhook Simulation & Driver)</option>
 					</select>
 				</div>
 
@@ -43,6 +45,22 @@ defined( 'ABSPATH' ) || exit;
 							<option value="PAYMENT.SALE.COMPLETED">PAYMENT.SALE.COMPLETED (Recurring Cycle)</option>
 							<option value="BILLING.SUBSCRIPTION.PAYMENT.FAILED">BILLING.SUBSCRIPTION.PAYMENT.FAILED (Declined Cycle)</option>
 							<option value="BILLING.SUBSCRIPTION.CANCELLED">BILLING.SUBSCRIPTION.CANCELLED (Buyer/Admin Cancel)</option>
+						</optgroup>
+
+						<!-- Authorize.Net Events -->
+						<optgroup label="Authorize.Net Events" id="urpt-authorize-events" style="display:none;">
+							<option value="net.authorize.payment.authcapture.created">net.authorize.payment.authcapture.created (Payment Succeeded)</option>
+							<option value="net.authorize.customer.subscription.failed">net.authorize.customer.subscription.failed (Payment Failed)</option>
+							<option value="net.authorize.customer.subscription.cancelled">net.authorize.customer.subscription.cancelled (Subscription Cancelled)</option>
+							<option value="net.authorize.payment.refund.created">net.authorize.payment.refund.created (Payment Refunded)</option>
+						</optgroup>
+
+						<!-- Mollie Events -->
+						<optgroup label="Mollie Events" id="urpt-mollie-events" style="display:none;">
+							<option value="payment.paid">payment.paid (Renewal / Payment Paid)</option>
+							<option value="payment.failed">payment.failed (Payment Failed)</option>
+							<option value="subscription.canceled">subscription.canceled (Subscription Canceled)</option>
+							<option value="payment.refunded">payment.refunded (Payment Refunded)</option>
 						</optgroup>
 					</select>
 				</div>
@@ -82,6 +100,18 @@ defined( 'ABSPATH' ) || exit;
 					<li><?php esc_html_e( 'Route: POST /wp-json/user-registration/paypal-webhook', 'ur-payment-tester' ); ?></li>
 					<li><?php esc_html_e( 'Handshake Interceptor: pre_http_request mocks /v1/notifications/verify-webhook-signature', 'ur-payment-tester' ); ?></li>
 					<li><?php esc_html_e( 'Verification Return: {"verification_status": "SUCCESS"}', 'ur-payment-tester' ); ?></li>
+				</ul>
+
+				<p><strong><?php esc_html_e( 'Authorize.Net Webhook & Silent Post Routing:', 'ur-payment-tester' ); ?></strong></p>
+				<ul>
+					<li><?php esc_html_e( 'Driver: URPT_Driver_Authorize with silent post / webhook event dispatching', 'ur-payment-tester' ); ?></li>
+					<li><?php esc_html_e( 'Signature Header: X-Anet-Signature (HMAC-SHA512 verification support)', 'ur-payment-tester' ); ?></li>
+				</ul>
+
+				<p><strong><?php esc_html_e( 'Mollie Webhook Routing:', 'ur-payment-tester' ); ?></strong></p>
+				<ul>
+					<li><?php esc_html_e( 'Driver: URPT_Driver_Mollie with payment & subscription status callbacks', 'ur-payment-tester' ); ?></li>
+					<li><?php esc_html_e( 'Payload: id (Mollie payment/subscription identifier)', 'ur-payment-tester' ); ?></li>
 				</ul>
 			</div>
 		</div>

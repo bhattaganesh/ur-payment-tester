@@ -46,8 +46,8 @@ class URPT_CLI {
 			} else {
 				WP_CLI::error( "{$result['title']} failed one or more assertions." );
 			}
-		} catch ( \Exception $e ) {
-			WP_CLI::error( $e->getMessage() );
+		} catch ( \Throwable $e ) {
+			WP_CLI::error( sprintf( '%s in %s:%d', $e->getMessage() ?: get_class( $e ), $e->getFile(), $e->getLine() ) );
 		}
 	}
 

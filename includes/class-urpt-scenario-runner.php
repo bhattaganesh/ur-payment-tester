@@ -36,6 +36,8 @@ class URPT_Scenario_Runner {
 	 * @throws \InvalidArgumentException If scenario ID is unrecognized.
 	 */
 	public function run( $id ) {
+		$this->ensure_tables();
+
 		switch ( (int) $id ) {
 			case 1:
 				$result = $this->run_scenario_1();
@@ -61,6 +63,20 @@ class URPT_Scenario_Runner {
 
 		update_option( 'urpt_last_scenario_result', $result, false );
 		return $result;
+	}
+
+	/**
+	 * Ensures required database tables exist before running scenarios.
+	 *
+	 * @return void
+	 */
+	public function ensure_tables() {
+		if ( class_exists( '\WPEverest\URMembership\Admin\Database\Database' ) ) {
+			\WPEverest\URMembership\Admin\Database\Database::create_tables();
+		}
+		if ( class_exists( '\UR_Install' ) ) {
+			\UR_Install::install();
+		}
 	}
 
 	/**

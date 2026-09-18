@@ -34,14 +34,20 @@
 		// 2. Gateway Dropdown Toggle
 		$('#urpt-wh-gateway').on('change', function() {
 			var gateway = $(this).val();
+			$('#urpt-stripe-events, #urpt-paypal-events, #urpt-authorize-events, #urpt-mollie-events').hide();
+
 			if (gateway === 'stripe') {
 				$('#urpt-stripe-events').show();
-				$('#urpt-paypal-events').hide();
 				$('#urpt-wh-event').val('invoice.payment_succeeded');
-			} else {
-				$('#urpt-stripe-events').hide();
+			} else if (gateway === 'paypal') {
 				$('#urpt-paypal-events').show();
 				$('#urpt-wh-event').val('PAYMENT.CAPTURE.COMPLETED');
+			} else if (gateway === 'authorize') {
+				$('#urpt-authorize-events').show();
+				$('#urpt-wh-event').val('net.authorize.payment.authcapture.created');
+			} else if (gateway === 'mollie') {
+				$('#urpt-mollie-events').show();
+				$('#urpt-wh-event').val('payment.paid');
 			}
 		});
 

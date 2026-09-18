@@ -132,6 +132,20 @@ class URPT_Core {
 	public $driver_invoice;
 
 	/**
+	 * Authorize.Net simulation driver.
+	 *
+	 * @var URPT_Driver_Authorize
+	 */
+	public $driver_authorize;
+
+	/**
+	 * Mollie simulation driver.
+	 *
+	 * @var URPT_Driver_Mollie
+	 */
+	public $driver_mollie;
+
+	/**
 	 * Retrieves the singleton instance.
 	 *
 	 * @return URPT_Core
@@ -175,6 +189,8 @@ class URPT_Core {
 		require_once URPT_PLUGIN_DIR . 'includes/drivers/class-urpt-driver-coupon.php';
 		require_once URPT_PLUGIN_DIR . 'includes/drivers/class-urpt-driver-content.php';
 		require_once URPT_PLUGIN_DIR . 'includes/drivers/class-urpt-driver-invoice.php';
+		require_once URPT_PLUGIN_DIR . 'includes/drivers/class-urpt-driver-authorize.php';
+		require_once URPT_PLUGIN_DIR . 'includes/drivers/class-urpt-driver-mollie.php';
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once URPT_PLUGIN_DIR . 'includes/class-urpt-cli.php';
@@ -193,15 +209,17 @@ class URPT_Core {
 		$this->webhook_dispatcher = new URPT_Webhook_Dispatcher();
 
 		// Initialize gateway and addon drivers.
-		$this->driver_stripe   = new URPT_Driver_Stripe();
-		$this->driver_paypal   = new URPT_Driver_Paypal();
-		$this->driver_bank     = new URPT_Driver_Bank();
-		$this->driver_upgrades = new URPT_Driver_Upgrades();
-		$this->driver_team     = new URPT_Driver_Team();
-		$this->driver_currency = new URPT_Driver_Currency();
-		$this->driver_coupon   = new URPT_Driver_Coupon();
-		$this->driver_content  = new URPT_Driver_Content();
-		$this->driver_invoice  = new URPT_Driver_Invoice();
+		$this->driver_stripe    = new URPT_Driver_Stripe();
+		$this->driver_paypal    = new URPT_Driver_Paypal();
+		$this->driver_bank      = new URPT_Driver_Bank();
+		$this->driver_upgrades  = new URPT_Driver_Upgrades();
+		$this->driver_team      = new URPT_Driver_Team();
+		$this->driver_currency  = new URPT_Driver_Currency();
+		$this->driver_coupon    = new URPT_Driver_Coupon();
+		$this->driver_content   = new URPT_Driver_Content();
+		$this->driver_invoice   = new URPT_Driver_Invoice();
+		$this->driver_authorize = new URPT_Driver_Authorize();
+		$this->driver_mollie    = new URPT_Driver_Mollie();
 
 		// HTTP interceptor coordinates with drivers in simulation mode.
 		$this->http_interceptor = new URPT_HTTP_Interceptor( $this );

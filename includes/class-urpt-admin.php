@@ -163,11 +163,15 @@ class URPT_Admin {
 	public function ajax_dispatch_webhook() {
 		$this->verify_ajax();
 
-		$gateway = sanitize_text_field( $_POST['gateway'] ?? 'stripe' );
-		$event   = sanitize_text_field( $_POST['event'] ?? 'invoice.payment_succeeded' );
-		$sub_id  = absint( $_POST['subscription_id'] ?? 0 );
+		$gateway = sanitize_text_field( wp_unslash( $_POST['gateway'] ?? 'stripe' ) );
+		$event   = sanitize_text_field( wp_unslash( $_POST['event'] ?? 'invoice.payment_succeeded' ) );
+		$sub_raw = sanitize_text_field( wp_unslash( $_POST['subscription_id'] ?? '' ) );
+		$amount  = isset( $_POST['amount'] ) ? floatval( $_POST['amount'] ) : 19.99;
 
-		$context = array( 'subscription_id' => $sub_id ? 'sub_urpt_' . $sub_id : 'sub_urpt_' . time() );
+		$context = array(
+			'subscription_id' => ! empty( $sub_raw ) ? $sub_raw : 'sub_urpt_' . time(),
+			'amount'          => $amount,
+		);
 		$res     = $this->core->webhook_dispatcher->dispatch( $gateway, $event, $context );
 
 		wp_send_json_success( $res );

@@ -58,6 +58,20 @@ class URPT_HTTP_Interceptor {
 
 		// Stripe credential fallbacks.
 		add_filter(
+			'pre_option_user_registration_stripe_test_mode',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 1;
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_stripe_enabled',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'yes';
+			}
+		);
+
+		add_filter(
 			'pre_option_user_registration_stripe_test_publishable_key',
 			function ( $val ) {
 				return ! empty( $val ) ? $val : 'pk_test_urpt_simulated_publishable_key';
@@ -66,6 +80,20 @@ class URPT_HTTP_Interceptor {
 
 		add_filter(
 			'pre_option_user_registration_stripe_test_secret_key',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'sk_test_urpt_simulated_secret_key';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_stripe_live_publishable_key',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'pk_test_urpt_simulated_publishable_key';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_stripe_live_secret_key',
 			function ( $val ) {
 				return ! empty( $val ) ? $val : 'sk_test_urpt_simulated_secret_key';
 			}
@@ -94,6 +122,55 @@ class URPT_HTTP_Interceptor {
 
 		// PayPal credential fallbacks.
 		add_filter(
+			'pre_option_user_registration_global_paypal_mode',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'test';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_test_client_id',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'URPT_SIMULATED_PAYPAL_CLIENT_ID';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_test_client_secret',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'URPT_SIMULATED_PAYPAL_CLIENT_SECRET';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_test_webhook_id',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'WH-URPT-SIMULATED-PAYPAL-ID';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_live_client_id',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'URPT_SIMULATED_PAYPAL_CLIENT_ID';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_live_client_secret',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'URPT_SIMULATED_PAYPAL_CLIENT_SECRET';
+			}
+		);
+
+		add_filter(
+			'pre_option_user_registration_global_paypal_live_webhook_id',
+			function ( $val ) {
+				return ! empty( $val ) ? $val : 'WH-URPT-SIMULATED-PAYPAL-ID';
+			}
+		);
+
+		add_filter(
 			'pre_option_user_registration_global_paypal_sandbox_client_id',
 			function ( $val ) {
 				return ! empty( $val ) ? $val : 'URPT_SIMULATED_PAYPAL_CLIENT_ID';
@@ -112,6 +189,16 @@ class URPT_HTTP_Interceptor {
 			function ( $val ) {
 				return ! empty( $val ) ? $val : 'WH-URPT-SIMULATED-PAYPAL-ID';
 			}
+		);
+
+		// Fallback for PayPal webhook processing when no matching database record exists.
+		add_filter(
+			'user_registration_paypal_webhook_event_fallback',
+			function ( $handled, $event_data ) {
+				return true;
+			},
+			10,
+			2
 		);
 	}
 
@@ -528,6 +615,9 @@ class URPT_HTTP_Interceptor {
 			if ( class_exists( 'Stripe\ApiRequestor' ) && ( class_exists( 'Stripe\HttpClient\ClientInterface' ) || interface_exists( 'Stripe\HttpClient\ClientInterface' ) ) ) {
 				require_once URPT_PLUGIN_DIR . 'includes/class-urpt-stripe-mock-client.php';
 				\Stripe\ApiRequestor::setHttpClient( new URPT_Stripe_Mock_Client() );
+			}
+			if ( class_exists( 'Stripe\Stripe' ) ) {
+				\Stripe\Stripe::setApiKey( 'sk_test_urpt_simulated_secret_key' );
 			}
 		};
 

@@ -93,8 +93,16 @@ class URPT_Assertions {
 
 		$mismatches = array();
 		foreach ( $criteria as $key => $expected_val ) {
-			if ( isset( $row[ $key ] ) && (string) $row[ $key ] !== (string) $expected_val ) {
-				$mismatches[] = "{$key}: expected '{$expected_val}', got '{$row[$key]}'";
+			if ( isset( $row[ $key ] ) ) {
+				$actual_val = $row[ $key ];
+				if ( is_numeric( $expected_val ) && is_numeric( $actual_val ) ) {
+					// Numeric comparison prevents failures caused by database decimal trailing zeros.
+					if ( abs( (float) $actual_val - (float) $expected_val ) > 0.0001 ) {
+						$mismatches[] = "{$key}: expected '{$expected_val}', got '{$actual_val}'";
+					}
+				} elseif ( (string) $actual_val !== (string) $expected_val ) {
+					$mismatches[] = "{$key}: expected '{$expected_val}', got '{$actual_val}'";
+				}
 			}
 		}
 
@@ -129,8 +137,16 @@ class URPT_Assertions {
 
 		$mismatches = array();
 		foreach ( $criteria as $key => $expected_val ) {
-			if ( isset( $row[ $key ] ) && (string) $row[ $key ] !== (string) $expected_val ) {
-				$mismatches[] = "{$key}: expected '{$expected_val}', got '{$row[$key]}'";
+			if ( isset( $row[ $key ] ) ) {
+				$actual_val = $row[ $key ];
+				if ( is_numeric( $expected_val ) && is_numeric( $actual_val ) ) {
+					// Numeric comparison prevents failures caused by database decimal trailing zeros.
+					if ( abs( (float) $actual_val - (float) $expected_val ) > 0.0001 ) {
+						$mismatches[] = "{$key}: expected '{$expected_val}', got '{$actual_val}'";
+					}
+				} elseif ( (string) $actual_val !== (string) $expected_val ) {
+					$mismatches[] = "{$key}: expected '{$expected_val}', got '{$actual_val}'";
+				}
 			}
 		}
 
